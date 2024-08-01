@@ -4,6 +4,14 @@ export const db = new sqlite.Database("database.db");
 
 const createTables = [
   `
+        CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT,
+            hashedPassword TEXT,
+            CONSTRAINT uniqueUsername UNIQUE(username)
+        )
+    `,
+  `
         CREATE TABLE IF NOT EXISTS todos (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             title TEXT,
@@ -15,6 +23,24 @@ const createTables = [
 createTables.forEach((t) => {
   db.run(t);
 });
+
+export const createUser = (username, hashedPassword, callback) => {
+  console.log(username);
+  const query = `
+    INSERT INTO users (username, hashedPassword)
+    VALUES (?,?)
+  `;
+  const values = [username, hashedPassword];
+  db.run(query, values, callback);
+};
+
+export const getUser = (username, callback) => {
+  const query = `
+    SELECT * FROM users WHERE username = ?
+  `;
+  const values = [username];
+  db.get(query, values, callback);
+};
 
 export const getTodos = (callback) => {
   const query = `
