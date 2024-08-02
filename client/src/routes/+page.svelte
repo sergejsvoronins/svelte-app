@@ -1,20 +1,4 @@
-<script>
-	import user from '../user'
-    import Login from '../lib/Login.svelte';
-    $: isLoggedIn = $user === null? false : true;
-
-	const logout = () => {
-		user.update(val => val = null);
-	}
-</script>
-
-<h1>Login</h1>
-{#if isLoggedIn}
-<h2>Welcome
-    <!-- {$user.firstname} -->
-</h2>
-<input type="button" value="Logout" on:click={logout}/>
-{:else}
-<h2>Would you like to log in?</h2>
-<Login />
-{/if}
+<h1>Welcome to startpage</h1>
+<a href="/login">Log in</a>
+If you don't have account please create a new here:
+<a href="/register">Sign in</a>
