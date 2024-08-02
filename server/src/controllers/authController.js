@@ -1,3 +1,4 @@
+import { setLoginStatus } from "../middleware/setLoginStatus.js";
 import { createUser, getUser } from "../serveces/dbSevices.js";
 import { comparePass, getJWTToken, hashPass } from "../utils/authUtils.js";
 
@@ -5,14 +6,13 @@ export const authControll = {
   registerNewUser: (req, res) => {
     const { username, pass } = req.body;
     const hashedPassword = hashPass(pass);
-    createUser(username, hashedPassword),
-      (error) => {
-        if (error) {
-          res.status(500).send(error);
-        } else {
-          res.sensStatus(200);
-        }
-      };
+    createUser(username, hashedPassword, (error) => {
+      if (error) {
+        res.status(500).send(error);
+      } else {
+        res.sendStatus(200);
+      }
+    });
   },
   login: (req, res) => {
     const { username, pass } = req.body;
@@ -24,7 +24,7 @@ export const authControll = {
         const correctPass = comparePass(pass, hashedPass);
         if (correctPass) {
           const jwtToken = getJWTToken(user);
-          res.send(jwtToken);
+          res.json(jwtToken);
         } else {
           res.sendStatus(404);
         }

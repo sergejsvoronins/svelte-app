@@ -1,7 +1,7 @@
-import { decodeJWT, verifyJWT } from "../utils/authUtils";
+import { decodeJWT, verifyJWT } from "../utils/authUtils.js";
 
 export const setLoginStatus = (req, res, next) => {
-  const tolen = req.headers.authorization;
+  const token = req.headers.authorization;
   if (token && verifyJWT(token)) {
     const tokenData = decodeJWT(token);
     req.user = tokenData;
@@ -9,5 +9,6 @@ export const setLoginStatus = (req, res, next) => {
   } else {
     req.user = { isLoggedIn: false };
   }
+  console.log(req.user);
   next();
 };

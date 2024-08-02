@@ -11,7 +11,9 @@ export const comparePass = (pass, hash) => {
 };
 export const getJWTToken = (user) => {
   const userData = { userId: user.id, username: user.name };
-  const accessToken = jsonwebtoken.sign(userData, secretKey);
+  const accessToken = jsonwebtoken.sign(userData, secretKey, {
+    expiresIn: 86400,
+  });
   return accessToken;
 };
 

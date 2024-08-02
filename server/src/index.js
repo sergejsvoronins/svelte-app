@@ -5,6 +5,7 @@ import cors from "cors";
 import { authRouter } from "./routes/authRouter.js";
 import { decodeJWT, verifyJWT } from "./utils/authUtils.js";
 import { forceAuth } from "./middleware/forceAuth.js";
+import { setLoginStatus } from "./middleware/setLoginStatus.js";
 
 const app = express();
 app.use(cors());
@@ -22,7 +23,10 @@ app.use((req, res, next) => {
   next();
 });
 app.use("/", authRouter);
-app.use("/todos", todoRouter);
+app.use("/todos", forceAuth, todoRouter);
+app.get("/", (req, res) => {
+  res.send(req.user);
+});
 app.listen(8001, () => {
   console.log("Listening on localhost, port: 8001");
 });

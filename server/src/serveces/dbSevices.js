@@ -15,7 +15,9 @@ const createTables = [
         CREATE TABLE IF NOT EXISTS todos (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             title TEXT,
-            is_done boolean
+            is_done boolean,
+            user_id INTEGER,
+            FOREIGN KEY(user_id) REFERENCES users(id)
         )
     `,
 ];
@@ -25,13 +27,19 @@ createTables.forEach((t) => {
 });
 
 export const createUser = (username, hashedPassword, callback) => {
-  console.log(username);
   const query = `
     INSERT INTO users (username, hashedPassword)
     VALUES (?,?)
   `;
   const values = [username, hashedPassword];
   db.run(query, values, callback);
+  // db.run(query, values, (err) => {
+  //   if (err) {
+  //     callback(err, null); // Send error status
+  //   } else {
+  //     callback(null, "User created successfully"); // Send success status
+  //   }
+  // });
 };
 
 export const getUser = (username, callback) => {
@@ -42,11 +50,12 @@ export const getUser = (username, callback) => {
   db.get(query, values, callback);
 };
 
-export const getTodos = (callback) => {
+export const getTodos = (id, callback) => {
   const query = `
-        SELECT * FROM todos
+        SELECT * FROM todos WHERE user_id = ?
     `;
-  db.all(query, callback);
+  const values = [id];
+  db.all(query, values, callback);
 };
 export const getOneTodo = (id, callback) => {
   const query = `

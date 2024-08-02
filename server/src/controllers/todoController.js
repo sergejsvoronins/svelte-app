@@ -8,6 +8,7 @@ import {
   setTodoTitle,
 } from "../serveces/dbSevices.js";
 export const getAllTodos = (req, res) => {
+  const id = req.user.userId; // Should be checked when it is time
   getTodos((err, data) => {
     err ? res.sendStatus(500) : res.send(data);
   });
