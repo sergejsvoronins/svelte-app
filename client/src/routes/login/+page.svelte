@@ -14,7 +14,6 @@
       body: JSON.stringify({ username: username, password: password }),
     });
     const json = await response.json();
-    console.log(json);
     if (json.success === true) {
       console.log(json.message);
       goto("/");
@@ -25,7 +24,6 @@
 </script>
 
 <h1>Login</h1>
-<a href="/">to start page</a>
 
 <form on:submit={logIn}>
   <div>

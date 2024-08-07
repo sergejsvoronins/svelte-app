@@ -9,7 +9,6 @@
       errorMessage = "Passwords not match";
       return;
     }
-    console.log("Submit");
     try {
       const response = fetch("http://localhost:8001/api/register", {
         method: "POST",
@@ -39,6 +38,7 @@
   }
 </script>
 
+<h2>Registration</h2>
 <form on:submit|preventDefault={registerUser}>
   <div>
     <label for="username">Username</label>

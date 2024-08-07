@@ -1,7 +1,7 @@
 import { verifyJWT } from "../utils/authUtils.js";
 
 export const forceAuth = (req, res, next) => {
-  const cookie = req.cookies["authToken"];
+  const cookie = req.cookies["token"];
   try {
     const claims = verifyJWT(cookie, "secret key");
     console.log(claims);

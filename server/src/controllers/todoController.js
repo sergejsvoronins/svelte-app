@@ -7,13 +7,9 @@ import {
   setTodoStatus,
   setTodoTitle,
 } from "../serveces/dbSevices.js";
-import { verifyJWT } from "../utils/authUtils.js";
 export const getAllTodos = (req, res) => {
-  // const cookie = req.cookies["authToken"];
-  // const claims = verifyJWT(cookie, "secret key");
   const userId = +req.params.userid;
   console.log(userId);
-  // const id = claims.userId; // Should be checked when it is time
   getTodos(userId, (err, data) => {
     err ? res.sendStatus(500) : res.send(data);
   });

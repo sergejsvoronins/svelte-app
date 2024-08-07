@@ -26,24 +26,10 @@
       user.update((val: IUser | null) => (val = null));
     }
   });
-  const logout = async () => {
-    await fetch("http://localhost:8001/api/logout", {
-      method: "GET",
-      credentials: "include",
-      headers: {
-        Accept: "application/json",
-        "content-type": "application/json",
-      },
-    });
-    user.update((val) => (val = null));
-    await goto("/");
-  };
 </script>
 
-<h1>Welcome to startpage</h1>
 {#if isLoggedIn}
   <h2>Thank you for logging in {$user?.username}</h2>
-  <input type="button" value="Logout" on:click={logout} />
 {:else}
   <h2>You need to be logged in here</h2>
   <a href="/login">Log in</a>
