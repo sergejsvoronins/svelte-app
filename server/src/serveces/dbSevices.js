@@ -27,19 +27,36 @@ createTables.forEach((t) => {
 });
 
 export const createUser = (username, hashedPassword, callback) => {
-  const query = `
-    INSERT INTO users (username, hashedPassword)
-    VALUES (?,?)
+  const checkQuery = `
+    SELECT COUNT(*) as count
+    FROM users
+    WHERE username = ?
   `;
-  const values = [username, hashedPassword];
-  db.run(query, values, callback);
-  // db.run(query, values, (err) => {
-  //   if (err) {
-  //     callback(err, null); // Send error status
-  //   } else {
-  //     callback(null, "User created successfully"); // Send success status
-  //   }
-  // });
+  db.get(checkQuery, [username], (err, row) => {
+    if (err) {
+      callback(err, null);
+    } else {
+      const count = row.count;
+      if (count > 0) {
+        const error = new Error("User already exists");
+        callback(error, error.message, null);
+      } else {
+        const query = `
+          INSERT INTO users (username, hashedPassword)
+          VALUES (?,?)
+        `;
+        const values = [username, hashedPassword];
+        db.run(query, values, function (err) {
+          if (err) {
+            callback(err, null); // Send error status
+          } else {
+            const userId = this.lastID; // Get the last inserted row id
+            callback(null, "User created successfully", userId); // Send success status and userId
+          }
+        });
+      }
+    }
+  });
 };
 
 export const getUser = (username, callback) => {
@@ -49,11 +66,17 @@ export const getUser = (username, callback) => {
   const values = [username];
   db.get(query, values, callback);
 };
+export const getUserById = (id, callback) => {
+  const query = `
+    SELECT * FROM users WHERE id = ?
+  `;
+  const values = [id];
+  db.get(query, values, callback);
+};
 
 export const getTodos = (id, callback) => {
   const query = `
-        SELECT * FROM todos WHERE user_id = ?
-    `;
+        SELECT * FROM todos WHERE user_id = ?`;
   const values = [id];
   db.all(query, values, callback);
 };

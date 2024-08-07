@@ -9,7 +9,7 @@ import {
 } from "../controllers/todoController.js";
 
 export const todoRouter = express.Router();
-todoRouter.get("/", (req, res, next) => {
+todoRouter.get("/:userid/todos", (req, res, next) => {
   getAllTodos(req, res);
 });
 todoRouter.get("/:id", (req, res, next) => {

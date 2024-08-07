@@ -6,24 +6,32 @@ import { authRouter } from "./routes/authRouter.js";
 import { decodeJWT, verifyJWT } from "./utils/authUtils.js";
 import { forceAuth } from "./middleware/forceAuth.js";
 import { setLoginStatus } from "./middleware/setLoginStatus.js";
+import cookeaParser from "cookie-parser";
 
 const app = express();
-app.use(cors());
-app.use(bodyParser.json());
-app.use(express.urlencoded());
-app.use((req, res, next) => {
-  const token = req.headers.authorization;
-  if (token && verifyJWT(token)) {
-    const tokenData = decodeJWT(token);
-    req.user = tokenData;
-    req.user.isLoggedIn = true;
-  } else {
-    req.user = { isLoggedIn: false };
-  }
-  next();
-});
+app.use(
+  cors({
+    origin: true,
+    credentials: true,
+  })
+);
+app.use(express.json());
+// app.use(bodyParser.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(cookeaParser());
+// app.use((req, res, next) => {
+//   const cookie = req.cookies["authToken"];
+//   if (cookie && verifyJWT(cookie)) {
+//     const tokenData = decodeJWT(cookie);
+//     req.user = tokenData;
+//     req.user.isLoggedIn = true;
+//   } else {
+//     req.user = { isLoggedIn: false };
+//   }
+//   next();
+// });
 app.use("/", authRouter);
-app.use("/todos", forceAuth, todoRouter);
+app.use("/user", forceAuth, todoRouter);
 app.get("/", (req, res) => {
   res.send(req.user);
 });
