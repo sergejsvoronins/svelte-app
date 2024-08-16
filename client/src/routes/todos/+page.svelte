@@ -11,7 +11,7 @@
   if (data.todos) {
     todoList = [...data.todos];
   }
-  onMount(() => {
+  $effect.pre(() => {
     if (!$user) {
       goto("/");
     }

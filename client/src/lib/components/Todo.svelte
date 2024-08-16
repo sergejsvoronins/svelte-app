@@ -5,6 +5,7 @@
     todo: ITodo;
     getTodos: () => void;
   }
+
   let { todo, getTodos }: IProps = $props();
   const changeTodo = (event: KeyboardEvent, id: number, status: boolean) => {
     if (event.key !== "Enter") return;
