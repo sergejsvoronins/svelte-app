@@ -11,7 +11,7 @@ export async function load() {
     },
   });
   const data = await response.json();
-  if (data.success === true) {
+  if (data.success) {
     updateUser(null);
     redirect(302, "/");
   }

@@ -16,7 +16,7 @@
     });
     const data = await response.json();
 
-    if (data.success === true) {
+    if (data.success) {
       await goto("/auth");
     }
   };

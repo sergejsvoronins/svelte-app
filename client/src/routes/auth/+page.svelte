@@ -8,9 +8,8 @@
     message: string;
     data: IUser;
   };
-  $: console.log("authpage", $user);
 
-  if (data.success === true) {
+  if (data.success) {
     updateUser(data.data);
 
     goto("/");
