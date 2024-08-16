@@ -2,17 +2,15 @@
   import { user } from "../../user";
   import { goto } from "$app/navigation";
   import { onMount } from "svelte";
+  import Todo from "../../lib/components/Todo.svelte";
+  import type { ITodo } from "../../models";
 
-  interface ITodo {
-    id: number;
-    title: string;
-    is_done: boolean;
-    userId: number;
+  let { data } = $props();
+  let todoList: ITodo[] = $state([]);
+
+  if (data.todos) {
+    todoList = [...data.todos];
   }
-
-  export let data;
-  // let todoList: ITodo[] = $state([]);
-  let todoList = data?.todos ?? [];
   onMount(() => {
     if (!$user) {
       goto("/");
@@ -66,67 +64,21 @@
     }
     getTodos();
   };
-  const changeTodo = (event: KeyboardEvent, id: number, status: boolean) => {
-    if (event.key !== "Enter") return;
-    if ($user) {
-      const input = event.target as HTMLInputElement;
-      const res = fetch(`http://localhost:8001/user/${$user?.userId}/todos`, {
-        method: "PUT",
-        credentials: "include",
-        headers: {
-          Accept: "application/json",
-          "content-type": "application/json",
-        },
-        body: JSON.stringify({
-          id,
-          title: input.value,
-          is_done: status === true ? 1 : 0,
-        }),
-      });
-    }
-    getTodos();
-  };
 </script>
 
 <div>
   <label for="addTodo">Add todo {$user?.username}</label>
   <input type="text" name="addTodo" id="addTodo" onkeydown={addTodo} />
+  <h3>Active</h3>
   {#each todoList as todo}
-    <div>
-      <input
-        type="text"
-        value={todo.title}
-        name=""
-        id=""
-        onkeydown={(event) => changeTodo(event, todo.id, todo.is_done)}
-      />
-      <input
-        type="checkbox"
-        checked={todo.is_done}
-        name=""
-        id=""
-        onchange={(event) => {
-          if ($user) {
-            const res = fetch(
-              `http://localhost:8001/user/${$user?.userId}/todos`,
-              {
-                method: "PUT",
-                credentials: "include",
-                headers: {
-                  Accept: "application/json",
-                  "content-type": "application/json",
-                },
-                body: JSON.stringify({
-                  id: todo.id,
-                  title: todo.title,
-                  is_done: event.currentTarget.checked ? 1 : 0,
-                }),
-              }
-            );
-          }
-          getTodos();
-        }}
-      />
-    </div>
+    {#if !todo.is_done}
+      <Todo {getTodos} {todo} />
+    {/if}
+  {/each}
+  <h3>Completed</h3>
+  {#each todoList as todo}
+    {#if todo.is_done}
+      <Todo {getTodos} {todo} />
+    {/if}
   {/each}
 </div>
