@@ -12,8 +12,10 @@
     try {
       const response = fetch("http://localhost:8001/api/register", {
         method: "POST",
+        credentials: "include",
         headers: {
-          "Content-type": "application/json",
+          //   Accept: "application/json",
+          "content-type": "application/json",
         },
         body: JSON.stringify({ username: username, password: passwordOne }),
       })

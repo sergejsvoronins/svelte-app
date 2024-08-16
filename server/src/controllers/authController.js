@@ -8,6 +8,7 @@ import {
 export const authControll = {
   registerNewUser: (req, res) => {
     const { username, password } = req.body;
+
     if (!username) {
       res.status(500).json({
         success: false,
