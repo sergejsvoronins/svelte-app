@@ -4,8 +4,7 @@ import {
   getLastRow,
   getOneTodo,
   getTodos,
-  setTodoStatus,
-  setTodoTitle,
+  updateTodo,
 } from "../serveces/dbSevices.js";
 export const getAllTodos = (req, res) => {
   const userId = +req.params.userid;
@@ -22,8 +21,9 @@ export const getSingleTodo = (req, res) => {
 };
 export const createToDo = (req, res) => {
   const todo = req.body;
+  const userId = +req.params.userid;
   if (todo.title) {
-    addTodo(todo.title, false, (err) => {
+    addTodo(todo.title, false, userId, (err) => {
       if (err) {
         res.sendStatus(500);
       } else {
@@ -36,20 +36,12 @@ export const createToDo = (req, res) => {
     res.sendStatus(400);
   }
 };
-export const updateTodoStatus = (req, res) => {
-  const id = +req.params.id;
-  setTodoStatus(id, (err) => {
-    err ? res.sendStatus(500) : res.sendStatus(200);
-  });
-};
-export const updateTodoTitle = (req, res) => {
+export const changeTodo = (req, res) => {
   const todo = req.body;
-  if (todo.id && todo.title !== undefined) {
-    setTodoTitle(todo.id, todo.title, (err) => {
+  if (todo.title && todo.id && (todo.is_done === 1 || todo.is_done === 0)) {
+    updateTodo(todo, (err) => {
       err ? res.sendStatus(500) : res.sendStatus(200);
     });
-  } else {
-    res.sendStatus(400);
   }
 };
 export const removeTodo = (req, res) => {

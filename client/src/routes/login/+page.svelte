@@ -1,5 +1,6 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
+  import { user, type IUser } from "../../user";
   export let username = "";
   export let password = "";
 
@@ -13,19 +14,17 @@
       },
       body: JSON.stringify({ username: username, password: password }),
     });
-    const json = await response.json();
-    if (json.success === true) {
-      console.log(json.message);
-      goto("/");
-    } else {
-      //   return invalid(422, { errors: json });
+    const data = await response.json();
+
+    if (data.success === true) {
+      await goto("/auth");
     }
   };
 </script>
 
 <h1>Login</h1>
 
-<form on:submit={logIn}>
+<form onsubmit={logIn}>
   <div>
     <label for="username">Username</label>
     <input type="text" id="username" bind:value={username} />

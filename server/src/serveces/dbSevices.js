@@ -87,26 +87,21 @@ export const getOneTodo = (id, callback) => {
   const values = [id];
   db.all(query, values, callback);
 };
-export const addTodo = (title, is_done, callback) => {
+export const addTodo = (title, is_done, userId, callback) => {
   const query = `
-        INSERT INTO todos (title, is_done)
-        VALUES (?,?)
+        INSERT INTO todos (title, is_done, user_id)
+        VALUES (?,?,?)
     `;
-  const values = [title, is_done];
+  const values = [title, is_done, userId];
   db.run(query, values, callback);
 };
-export const setTodoStatus = (id, callback) => {
+export const updateTodo = (todo, callback) => {
+  console.log(todo);
+
   const query = `
-        UPDATE todos SET is_done = CASE WHEN is_done = 0 THEN 1 ELSE 0 END WHERE id = ?
+        UPDATE todos SET is_done = ?, title = ? WHERE id = ?
     `;
-  const values = [id];
-  db.run(query, values, callback);
-};
-export const setTodoTitle = (id, title, callback) => {
-  const query = `
-        UPDATE todos SET title = ? WHERE id = ?
-    `;
-  const values = [title, id];
+  const values = [todo.is_done, todo.title, todo.id];
   db.run(query, values, callback);
 };
 export const deleteTodo = (id, callback) => {

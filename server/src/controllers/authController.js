@@ -104,6 +104,7 @@ export const authControll = {
   },
   user: (req, res) => {
     const cookie = req.cookies["token"];
+
     try {
       const claims = verifyJWT(cookie, "secret key");
       if (!claims)

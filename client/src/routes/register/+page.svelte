@@ -21,7 +21,6 @@
           return res.json();
         })
         .then((data) => {
-          console.log(data);
           if (data.error === true) {
             errorMessage = data.message;
             throw new Error(data.message);
