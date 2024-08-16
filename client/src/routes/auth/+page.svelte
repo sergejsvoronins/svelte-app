@@ -1,6 +1,7 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
-  import { updateUser, user, type IUser } from "../../user";
+  import type { IUser } from "../../models";
+  import { updateUser } from "../../user";
 
   export let data: {
     success: boolean;

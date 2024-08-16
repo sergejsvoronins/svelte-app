@@ -4,7 +4,6 @@ export const forceAuth = (req, res, next) => {
   const cookie = req.cookies["token"];
   try {
     const claims = verifyJWT(cookie, "secret key");
-    console.log(claims);
     if (!claims) {
       res.status(401).json({
         success: false,

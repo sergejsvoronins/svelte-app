@@ -4,3 +4,7 @@ export interface ITodo {
   is_done: boolean;
   userId: number;
 }
+export interface IUser {
+  username: string;
+  userId: number;
+}

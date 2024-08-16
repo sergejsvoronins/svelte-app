@@ -9,6 +9,5 @@ export const setLoginStatus = (req, res, next) => {
   } else {
     req.user = { isLoggedIn: false };
   }
-  console.log(req.user);
   next();
 };

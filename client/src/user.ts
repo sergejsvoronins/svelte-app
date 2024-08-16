@@ -1,9 +1,7 @@
 import { browser } from "$app/environment";
 import { writable, type Writable } from "svelte/store";
-export interface IUser {
-  username: string;
-  userId: number;
-}
+import type { IUser } from "./models";
+
 // export const user: Writable<IUser | null> = writable(null);
 let persistedUser = browser && localStorage.getItem("user");
 

@@ -1,6 +1,5 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
-  import { user, type IUser } from "../../user";
   export let username = "";
   export let password = "";
 

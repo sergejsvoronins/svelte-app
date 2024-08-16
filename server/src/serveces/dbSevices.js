@@ -96,8 +96,6 @@ export const addTodo = (title, is_done, userId, callback) => {
   db.run(query, values, callback);
 };
 export const updateTodo = (todo, callback) => {
-  console.log(todo);
-
   const query = `
         UPDATE todos SET is_done = ?, title = ? WHERE id = ?
     `;

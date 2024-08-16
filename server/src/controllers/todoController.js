@@ -8,7 +8,6 @@ import {
 } from "../serveces/dbSevices.js";
 export const getAllTodos = (req, res) => {
   const userId = +req.params.userid;
-  console.log(userId);
   getTodos(userId, (err, data) => {
     err ? res.sendStatus(500) : res.send(data);
   });
