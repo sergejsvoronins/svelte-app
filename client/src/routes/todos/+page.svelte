@@ -4,10 +4,11 @@
   import { onMount } from "svelte";
   import Todo from "../../lib/components/Todo.svelte";
   import type { ITodo } from "../../models";
+  import { Button, Checkbox, cls, ListItem, TextField } from "svelte-ux";
 
   let { data } = $props();
   let todoList: ITodo[] = $state([]);
-
+  let newTodo: string = $state("");
   if (data.todos) {
     todoList = [...data.todos];
   }
@@ -26,7 +27,7 @@
           Accept: "application/json",
           "content-type": "application/json",
         },
-      }
+      },
     );
     const resData: {
       id: number;
@@ -46,8 +47,7 @@
     todoList = todos;
   };
 
-  const addTodo = (event: KeyboardEvent) => {
-    if (event.key !== "Enter") return;
+  const addTodo = (title: string) => {
     if ($user) {
       const input = event.target as HTMLInputElement;
 
@@ -58,24 +58,40 @@
           Accept: "application/json",
           "content-type": "application/json",
         },
-        body: JSON.stringify({ title: input.value }),
+        body: JSON.stringify({ title }),
       });
-      input.value = "";
     }
     getTodos();
   };
 </script>
 
-<div>
-  <label for="addTodo">Add todo {$user?.username}</label>
-  <input type="text" name="addTodo" id="addTodo" onkeydown={addTodo} />
-  <h3>Active</h3>
+<div class="grid p-4">
+  <div class="flex justify-center w-100 gap-2">
+    <TextField
+      labelPlacement="left"
+      bind:value={newTodo}
+      type="text"
+      on:keydown={(event) => {
+        if (event.key !== "Enter") return;
+        addTodo(event.target.value);
+        newTodo = "";
+      }}
+      classes={{ container: "w-80" }}
+    ></TextField>
+    <Button
+      color="primary"
+      variant="outline"
+      classes={{ root: "w-20" }}
+      on:click={() => addTodo(newTodo)}>Add todo</Button
+    >
+  </div>
+  <h3 class="py-3">Active</h3>
   {#each todoList as todo}
     {#if !todo.is_done}
       <Todo {getTodos} {todo} />
     {/if}
   {/each}
-  <h3>Completed</h3>
+  <h3 class="py-3">Completed</h3>
   {#each todoList as todo}
     {#if todo.is_done}
       <Todo {getTodos} {todo} />

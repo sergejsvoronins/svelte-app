@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { Checkbox, ListItem, TextField } from "svelte-ux";
   import type { ITodo } from "../../models";
   import { user } from "../../user";
   interface IProps {
@@ -29,36 +30,73 @@
   };
 </script>
 
-<div>
-  <input
-    type="text"
-    value={todo.title}
-    name=""
-    id=""
-    onkeydown={(event) => changeTodo(event, todo.id, todo.is_done)}
-  />
-  <input
-    type="checkbox"
-    checked={todo.is_done}
-    name=""
-    id=""
-    onchange={(event) => {
-      if ($user) {
-        const res = fetch(`http://localhost:8001/user/${$user?.userId}/todos`, {
-          method: "PUT",
-          credentials: "include",
-          headers: {
-            Accept: "application/json",
-            "content-type": "application/json",
-          },
-          body: JSON.stringify({
-            id: todo.id,
-            title: todo.title,
-            is_done: event.currentTarget.checked ? 1 : 0,
-          }),
-        });
-      }
-      getTodos();
-    }}
-  />
-</div>
+<ListItem classes={{ root: "border-none shadow-none" }}>
+  <div slot="title">
+    <TextField
+      type="text"
+      value={todo.title}
+      on:keydown={(event) => changeTodo(event, todo.id, todo.is_done)}
+    />
+    <!-- <input
+      type="text"
+      value={todo.title}
+      name=""
+      id=""
+      onkeydown={(event) => changeTodo(event, todo.id, todo.is_done)}
+    /> -->
+  </div>
+  <div slot="actions">
+    <Checkbox
+      size="lg"
+      circle
+      checked={todo.is_done}
+      on:change={(event) => {
+        if ($user) {
+          const res = fetch(
+            `http://localhost:8001/user/${$user?.userId}/todos`,
+            {
+              method: "PUT",
+              credentials: "include",
+              headers: {
+                Accept: "application/json",
+                "content-type": "application/json",
+              },
+              body: JSON.stringify({
+                id: todo.id,
+                title: todo.title,
+                is_done: event.target.checked ? 1 : 0,
+              }),
+            },
+          );
+        }
+        getTodos();
+      }}
+    />
+    <!-- <input
+      type="checkbox"
+      checked={todo.is_done}
+      name=""
+      id=""
+      onchange={(event) => {
+        if ($user) {
+          const res = fetch(
+            `http://localhost:8001/user/${$user?.userId}/todos`,
+            {
+              method: "PUT",
+              credentials: "include",
+              headers: {
+                Accept: "application/json",
+                "content-type": "application/json",
+              },
+              body: JSON.stringify({
+                id: todo.id,
+                title: todo.title,
+                is_done: event.currentTarget.checked ? 1 : 0,
+              }),
+            },
+          );
+        }
+        getTodos();
+      }} -->
+  </div>
+</ListItem>

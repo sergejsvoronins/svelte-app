@@ -1,12 +1,34 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
+  import { Form, TextField, Button } from "svelte-ux";
+  type Target = "username" | "passOne" | "passTwo";
   let username = "";
   let passwordOne = "";
   let passwordTwo = "";
-  let errorMessage = "";
+  let errorMessage: {
+    target?: Target;
+    type?: "required" | "notEquil" | "serverError";
+    message?: string;
+  } = {};
   function registerUser() {
+    const fieldsToValidate: { value: string; target: Target }[] = [
+      { value: username, target: "username" },
+      { value: passwordOne, target: "passOne" },
+      { value: passwordTwo, target: "passTwo" },
+    ];
+
+    for (const field of fieldsToValidate) {
+      if (field.value === "") {
+        errorMessage = {
+          target: field.target,
+          type: "required",
+          message: "Field is required",
+        };
+        return;
+      }
+    }
     if (passwordOne !== passwordTwo) {
-      errorMessage = "Passwords not match";
+      errorMessage = { type: "notEquil", message: "Passwords are not similar" };
       return;
     }
     try {
@@ -24,11 +46,11 @@
         })
         .then((data) => {
           if (data.error === true) {
-            errorMessage = data.message;
-            throw new Error(data.message);
+            errorMessage = { type: "serverError", message: data.message };
+          } else {
+            goto("/login");
           }
         })
-        .then(async () => await goto("/login"))
         .catch((error) => {
           if (error) {
             console.log("Error: ", error);
@@ -39,20 +61,49 @@
   }
 </script>
 
-<h2>Registration</h2>
-<form on:submit|preventDefault={registerUser}>
-  <div>
-    <label for="username">Username</label>
-    <input type="text" id="username" name="username" bind:value={username} />
-  </div>
-  <div>
-    <label for="password">Password</label>
-    <input type="password" id="password" bind:value={passwordOne} />
-  </div>
-  <div>
-    <label for="password">Repeat password</label>
-    <input type="password" id="password" bind:value={passwordTwo} />
-  </div>
-  <div>{errorMessage}</div>
-  <button type="submit">Submit</button>
-</form>
+<div class="grid justify-center">
+  <h2 class="py-3">Registration</h2>
+  <Form on:change={registerUser} class="grid gap-2">
+    <TextField
+      label="Name"
+      bind:value={username}
+      type="text"
+      error={errorMessage.type === "required" &&
+      errorMessage.target === "username"
+        ? errorMessage.message
+        : false}
+    />
+    <TextField
+      label="Password"
+      bind:value={passwordOne}
+      type="password"
+      error={errorMessage.type === "required" &&
+      errorMessage.target === "passOne"
+        ? errorMessage.message
+        : false}
+    />
+    <TextField
+      label="Repeat password"
+      bind:value={passwordTwo}
+      type="password"
+      error={errorMessage.type === "required" &&
+      errorMessage.target === "passTwo"
+        ? errorMessage.message
+        : false}
+    />
+    {#if errorMessage.type === "notEquil" || errorMessage.type === "serverError"}
+      <div class="error text-xs ml-2 text-danger">
+        {errorMessage.message}
+      </div>
+    {/if}
+    <div>
+      <Button type="submit" variant="fill" color="primary">Submit</Button>
+      <Button
+        type="reset"
+        variant="outline"
+        color="primary"
+        on:click={() => goto("/")}>Cancel</Button
+      >
+    </div>
+  </Form>
+</div>
